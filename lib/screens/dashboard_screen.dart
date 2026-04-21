@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:wisata_bengkalis/models/travel_destination.dart';
+import 'package:wisata_bengkalis/screens/travel_detail_screen.dart';
 import '../widgets/animated_fade_slide.dart';
 
 class DashboardScreen extends StatelessWidget {
@@ -128,18 +130,21 @@ class DashboardScreen extends StatelessWidget {
                         scrollDirection: Axis.horizontal,
                         children: [
                           _buildCard(
+                            context,
                             "Pantai Selat Baru",
                             "Bantan, Bengkalis",
                             "4.9",
                             "assets/images/pantai_selat_baru.jpg",
                           ),
                           _buildCard(
+                            context,
                             "Pantai Beting Aceh",
                             "Rupat, Bengkalis",
                             "4.8",
                             "assets/images/pantai_beting_aceh.jpg",
                           ),
                           _buildCard(
+                            context,
                             "Pantai Lapin",
                             "Bengkalis",
                             "4.7",
@@ -148,7 +153,7 @@ class DashboardScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-
+                    
                     SizedBox(height: 25.h),
 
                     // ================= REKOMENDASI =================
@@ -217,15 +222,34 @@ class DashboardScreen extends StatelessWidget {
     );
   }
 
-  // ================= CARD (SUDAH ADA GAMBAR) =================
+  // ================= CARD =================
   Widget _buildCard(
+    BuildContext context,
     String title,
     String location,
     String rating,
     String imagePath,
   ) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        final destination = TravelDestination(
+          id: title.hashCode,
+          name: title,
+          location: location,
+          description: "Destinasi wisata terbaik di Bengkalis",
+          price: 0,
+          imagePath: imagePath,
+          rating: double.parse(rating),
+        );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => TravelDetailScreen(
+              destination: destination,
+            ),
+          ),
+        );
+      },
       child: Container(
         width: 190.w,
         margin: EdgeInsets.only(right: 15.w),
