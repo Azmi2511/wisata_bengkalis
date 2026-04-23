@@ -35,7 +35,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0F172A),
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -56,7 +56,7 @@ class _SplashScreenState extends State<SplashScreen> {
               style: TextStyle(
                 fontSize: 22.sp,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: Color(0xFF6C5CE7),
                 letterSpacing: 1.5,
               ),
             ),
@@ -65,7 +65,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
             Text(
               "Explore the beauty of Bengkalis",
-              style: TextStyle(fontSize: 13.sp, color: Colors.white70),
+              style: TextStyle(fontSize: 13.sp, color: Color(0xFF0984E3)),
             ),
           ],
         ),

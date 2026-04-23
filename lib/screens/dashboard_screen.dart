@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:wisata_bengkalis/models/travel_destination.dart';
 import 'package:wisata_bengkalis/screens/travel_detail_screen.dart';
+import 'package:wisata_bengkalis/screens/travel_list_screen.dart';
 import '../widgets/animated_fade_slide.dart';
 
 class DashboardScreen extends StatelessWidget {
@@ -21,10 +22,7 @@ class DashboardScreen extends StatelessWidget {
                 padding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 30.h),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [
-                      Color(0xFF3B82F6),
-                      Color(0xFF06B6D4),
-                    ],
+                    colors: [Color(0xFF3B82F6), Color(0xFF06B6D4)],
                   ),
                   borderRadius: BorderRadius.vertical(
                     bottom: Radius.circular(30.r),
@@ -60,7 +58,10 @@ class DashboardScreen extends StatelessWidget {
                           CircleAvatar(
                             radius: 24.r,
                             backgroundColor: Colors.white.withOpacity(0.2),
-                            child: const Icon(Icons.notifications, color: Colors.white),
+                            child: const Icon(
+                              Icons.notifications,
+                              color: Colors.white,
+                            ),
                           ),
                         ],
                       ),
@@ -119,7 +120,7 @@ class DashboardScreen extends StatelessWidget {
                     // ================= POPULER =================
                     FadeSlideAnimation(
                       delay: 200,
-                      child: _sectionHeader("Destinasi Populer"),
+                      child: _sectionHeader(context, "Destinasi Populer"),
                     ),
 
                     SizedBox(height: 10.h),
@@ -153,21 +154,24 @@ class DashboardScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-                    
+
                     SizedBox(height: 25.h),
 
                     // ================= REKOMENDASI =================
                     FadeSlideAnimation(
                       delay: 300,
-                      child: _sectionHeader("Rekomendasi"),
+                      child: _sectionHeader(context, "Rekomendasi"),
                     ),
 
                     SizedBox(height: 10.h),
 
                     _buildRecommendation(
-                      "Wisata Mangrove",
+                      context,
+                      "Pantai Lapin",
                       "Rekomendasi terbaik untuk Anda",
                       "assets/images/pantai_lapin.jpeg",
+                      "4.7",
+                      "Bengkalis",
                     ),
 
                     SizedBox(height: 100.h),
@@ -182,7 +186,7 @@ class DashboardScreen extends StatelessWidget {
   }
 
   // ================= HEADER =================
-  Widget _sectionHeader(String title) {
+  Widget _sectionHeader(BuildContext context, String title) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -194,7 +198,14 @@ class DashboardScreen extends StatelessWidget {
             color: Colors.black87,
           ),
         ),
-        TextButton(onPressed: () {}, child: const Text("Lihat Semua")),
+        TextButton(onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const TravelListScreen(),
+            ),
+          );
+        }, child: const Text("Lihat Semua")),
       ],
     );
   }
@@ -244,18 +255,14 @@ class DashboardScreen extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => TravelDetailScreen(
-              destination: destination,
-            ),
+            builder: (context) => TravelDetailScreen(destination: destination),
           ),
         );
       },
       child: Container(
         width: 190.w,
         margin: EdgeInsets.only(right: 15.w),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20.r),
-        ),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(20.r)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -298,8 +305,10 @@ class DashboardScreen extends StatelessWidget {
               children: [
                 const Icon(Icons.location_on, size: 14, color: Colors.grey),
                 SizedBox(width: 4.w),
-                Text(location,
-                    style: TextStyle(color: Colors.grey, fontSize: 12.sp)),
+                Text(
+                  location,
+                  style: TextStyle(color: Colors.grey, fontSize: 12.sp),
+                ),
               ],
             ),
             SizedBox(height: 4.h),
@@ -318,39 +327,71 @@ class DashboardScreen extends StatelessWidget {
 
   // ================= REKOMENDASI =================
   Widget _buildRecommendation(
-      String title, String subtitle, String imagePath) {
-    return Container(
-      padding: EdgeInsets.all(12.w),
-      decoration: BoxDecoration(
-        color: const Color(0xFFE2E8F0),
-        borderRadius: BorderRadius.circular(15.r),
-      ),
-      child: Row(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10.r),
-            child: Image.asset(
-              imagePath,
-              width: 70.w,
-              height: 70.h,
-              fit: BoxFit.cover,
-            ),
+    BuildContext context,
+    title,
+    String subtitle,
+    String imagePath,
+    String rating,
+    String location,
+  ) {
+    return GestureDetector(
+      onTap: () {
+        final destination = TravelDestination(
+          id: title.hashCode,
+          name: title,
+          location: location,
+          description: "Rekomendasi Terbaik untuk Anda",
+          price: 0,
+          imagePath: imagePath,
+          rating: double.parse(rating),
+        );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => TravelDetailScreen(destination: destination),
           ),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title,
+        );
+      },
+
+      child: Container(
+        padding: EdgeInsets.all(12.w),
+        decoration: BoxDecoration(
+          color: const Color(0xFFE2E8F0),
+          borderRadius: BorderRadius.circular(15.r),
+        ),
+        child: Row(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10.r),
+              child: Image.asset(
+                imagePath,
+                width: 70.w,
+                height: 70.h,
+                fit: BoxFit.cover,
+              ),
+            ),
+            SizedBox(width: 12.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
                     style: TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 14.sp)),
-                Text(subtitle,
-                    style: TextStyle(color: Colors.grey, fontSize: 12.sp)),
-              ],
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14.sp,
+                    ),
+                  ),
+                  Text(
+                    subtitle,
+                    style: TextStyle(color: Colors.grey, fontSize: 12.sp),
+                  ),
+                ],
+              ),
             ),
-          ),
-          const Icon(Icons.arrow_forward_ios, size: 16),
-        ],
+            const Icon(Icons.arrow_forward_ios, size: 16),
+          ],
+        ),
       ),
     );
   }
